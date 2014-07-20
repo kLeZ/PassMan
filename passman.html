@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Na na na na na na na na na na na na na na na na, PassMan!">
+		<meta name="author" content="Alessandro Accardo a.k.a. kLeZ">
+		<link rel="icon" href="favicon.ico">
+
+		<title>PassMan</title>
+		<!-- jQuery CDN include (http://jquery.com/) -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+		<!-- Latest compiled and minified CSS (http://getbootstrap.com/) -->
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+		<script type="text/javascript">
+		/*!
+		* IE10 viewport hack for Surface/desktop Windows 8 bug
+		* Copyright 2014 Twitter, Inc.
+		* Licensed under the Creative Commons Attribution 3.0 Unported License. For
+		* details, see http://creativecommons.org/licenses/by/3.0/.
+		*/
+
+		// See the Getting Started docs for more information:
+		// http://getbootstrap.com/getting-started/#support-ie10-width
+
+		(function () {
+			'use strict';
+			if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+				var msViewportStyle = document.createElement('style')
+				msViewportStyle.appendChild(
+				document.createTextNode(
+					'@-ms-viewport{width:auto!important}'
+				)
+				)
+				document.querySelector('head').appendChild(msViewportStyle)
+			}
+		})();
+		</script>
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+		<!-- Font Awesome font icons css (https://fortawesome.github.io/Font-Awesome/) -->
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+		<!-- Optional theme (http://getbootstrap.com/) -->
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+		<!-- Latest compiled and minified JavaScript (http://getbootstrap.com/) -->
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+		<!-- KnockoutJS MVVM framework (http://knockoutjs.com/) -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+
+		<!-- OpenPGP.js implementation (http://openpgpjs.org/) -->
+		<script src="https://github.com/openpgpjs/openpgpjs/releases/download/v0.7.1/openpgp.min.js"></script>
+		<script src="https://github.com/openpgpjs/openpgpjs/releases/download/v0.7.1/openpgp.worker.min.js"></script>
+
+		<script id="test-pgp-private" type="application/pgp-encrypted">
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+lQc+BFPLNosBEACyqcJh8PBgfBlulH4Y9gri0YYm1ryzn1xQ099y9jsk/BAeVPCR
+P5lM2DGNakapswIRYGiV+y9aXi0vQdSUpLDiXMZCkdU0S4XEi1qZhzHF/IpsrTkS
+neFc5p5QN7D1f0vDWBAsCwvRx/jzyeO1ewmVmopQH3ZFFDbA/9JuNl3Lf+AmtQKM
+SVRH3ZtMnVVRfOm9EU+JT8ydpMENtkXZ8poh4byHZq9uPoVveHQaK8TKlBhcqwWJ
+dIp/XTcHSLaTDeOR7ZVqy+WYMGLwP5IiHnisd1B1ytu0JSPwCWwT8XxKIqvNYt63
+1wkym98nxsqimL2bRPlXRcR+oPXOInAkJfVIPN29tRExMYudJpDgerRJ/8watZaC
+r7qOgpi5346kVJONZot9KOtoJWxhwHis972HHeXaF5HuaRVfMkfo7QdFDfC9MoDD
+XtfPqdHsPxfXy8tr44uChn3neKNbn6lXQEdkbp4DZ7voX/3k2AHClLWdoL7X2D3j
+XfOD7Zc0ek6p1BaHXmhFj3JD7uYnNCfPFFEAdHvOf0ff6tpx81sgJnI3hZ5VKQey
+JcupIfbJSXq9UIeRwfriinAZYqoRrS4H5UhZ2sf+rPrwdMnhvZ8Ok63EKUDh1Rfj
+WxtIBtErguDy/AaiTh57c1Q1qDEh2XpsyyN3zBJCERVb+hGhIWVrWgMN9wARAQAB
+/gMDAkUt6W1HkMQI0+yXzuAoX7+KjmOqkH6SByrnHCZLNrwq8xQQxnJFw6vp6uE6
+jdxUAdjtSGNVAutMqv5hSl1HC5SB49Hlai/IoHSbVaxKStfi3Rj5xILroruCeJLQ
+2KChbbp8AhcMm/DutniM5jHGOaHwS0VNBjRSIohSA7/FE7sx76k7Gf1zU2KXJP8Z
+sGtWXeNwL7sfhzX1ibdSa+q0cd2RoMtmD1pEiQjGtUidXFnD9KjysUrU5H09dyey
+Wo2fKWcgQuk2gJjO5ZN5Ra1K9ZuC4zbDhZo84XlByRLymf69UZOAwF5X2RBkTs9t
+2XLJUekPcgMDSeMoA95ynguOSqwM4bEmLm6bveFcuRSXo2WJ/9ujNaB9LhRfOksG
+ymILV5+BPw1YjgUvyug7E3J7cIHMB3HxVXNk2itifnfbfFPnA2dKSiWf1cqY9+3j
+OoqVMjukZVoNPyjmPHuA1xHiYB05nMgLmmnyY1JVVlcH3UCAd/K8LlKXePkLKSdr
+eFETM/FfwuhS96fTYkZ6ltma4JUW1rGe+xAcwCvDGkovxl4VHpY2Q/iRft2w5FvR
++oSGOu2rk8dqu4yQjR1q8Wdkgr8XuKxaAlEYHb1VtlJky9o4YLA/bdcM80/EBsSG
+FRa8NgC5iwUACbGhn3FMPDQkib2BGqIeUqsMYBX4Gu4R1ZRmSqfAkxOMgKsITP4k
+4nv+C68hjEVaYvOJFKzvmJsWjoOstz/8aNHRaRiTJqnLam41x+H7m8Bb1CAttqAW
+nn3qDnyWvg0DHfxQ+W/TlikLgsZHn9B7bY1FO7Yq3pAZ8qNY6QOnzTwITT31C54E
+XH6Oc6zVsAyNOycjyhkT3ltFlbXfDSGpm1//wd55FflhOTCJi7yWbl4iKa4lKiRC
+kCJFvDcW2/jEHtop+NOg6lv8o0VXjQPmgFJWKiOiGatjfw1tlNRzBsATtJeyIcbc
+H8nYQQ5hQYB9t6MrKQQKW3qVBaHuw5xuCPA1ksJzQBWuCaY0GUiGDuUyBkQPyrEX
+Py82OFELhCcK/fI3txuLR33/Icwv+E/XxSxEVwOX+SxI48xAa/Nh+CAovs7VAsHm
+FaIQuubikzYMnoTjqfGJrt7pRMhAfqXefB7dxG61jHygZ1pYKjLNSGwPR8R4fqX3
+b0XDV+RD5SRNN0sDYEAwgFMtgX+6JXm9LdJMzNZKj6V53Kjsn20XHwNuQ3pf+STZ
+8A7CV3VY/0wQYLEg16dFcWeXge2rA2zotDvBFSi7MlJjWhk24mexX3Zk3Jio++Db
+AK19zD05cz1+lUBMcj4bQWDwBEQMQdPNVl1GXPkIj6rEhhfzXz5dsaW6+tZsN9XS
+l/CgMCVVmlo/HAtti1LWi3B72zjxcgiUS8MuphtNiDci91frVo/r+G9w9HarNSje
+NTTdHNCIjibID0IMxmrGd12vAH05yq3FUZ4ZF2KdVUTljbmV2wVTsqpea2lkHrRK
+tU+WIbk88WjmFYpCKGSYvhsN48cBAfORqfOTd96KY7mAW5hfe6KgJ61vszH5c3YC
+GSQj4wiL3bKZO11DcBbj8xVRC9s31ADsYWUktRk3amfXsIXSiBdZWfHmtgLUsKsb
+rIu+/T68rl8eYTzdpoxnJ6i3+RpyxSWNhJ+10TduXx9gogJWac3bPJ/BK5TH+R7z
+6PgidGJmNubs/mUChXLh+DRQL5JCEiyaSR1anLVqJPmkYjA+wT76UAMB70X5OYLc
+2xO52p7tnFKT7ixKZB175ZdefNig8wM7DA6Kkz3QRABKtB9UZXN0IFBhc3NNYW4g
+PHRlc3RAcGFzc21hbi5vcmc+iQI5BBMBAgAjBQJTyzaLAhsvBwsJCAcDAgEGFQgC
+CQoLBBYCAwECHgECF4AACgkQs4wwf2hmM2wKbQ/+OSRSLTlJKe9+RwsVXvq555NN
+wMUnzF99PmAcr5RPFPODkNegnRPRuWYGKCWhN0I/EjAA1WLlMl4O8ti2dBsQCxza
+PmWyIRKrYpsj4E6LyyleMHuaLxuvrsUpgCqFs1MZm3RGrITtQgGk9nx/5XqYavCb
+XLormgOQL8s/4bCfq6Anb9uEdl2hJW90d94kDde0XaLvtVue7xWXoAb4yZGB/4Vk
+Z1jTu1pZ3qj3RHo3l/sSu+gPkJs46yLcZKTjetAT5izbOshVLK3mE2VvKGopon/5
+UaQxSCRXs9WndXhFGZlC2zFDJRpBBpeAoZgsX9f9fd+N/8vxzlhPmQi23gK/oOev
+2Tw4PDrPBjoV/8QbwuE4jiGbnafn9BrUMvXm6y9y4r8wQL6bOVDEgm0lX45SwPdg
+Hic1/cyxQhY6mLvocqXmUmg6ojRQuLDfTE2D9qLLblq6/7vXA7otaaDqv3hrBnxt
+14adfwF/l4JpnGZ+ykPrs2G7L6/hOSQbJQZeS9DPO4ppI23NKc2zYPy4vWs+8JDW
+CKPYx9rHXOUg4S4lK30JLBcGY8iy4lk8pjdPA+A5wm8buLq0G2p6mkXNMG1jVkXG
+VbWKFHVHHrVjlfK6BNWjpU3YQvMY17QVVLK1Q4ple3FCRtVVpgy8wtT69S3YU1yx
+mhNalkPdurPbRzO1fC8=
+=jpE7
+-----END PGP PRIVATE KEY BLOCK-----
+		</script>
+		<script id="test-pgp-public" type="application/pgp-encrypted">
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+mQINBFPLNosBEACyqcJh8PBgfBlulH4Y9gri0YYm1ryzn1xQ099y9jsk/BAeVPCR
+P5lM2DGNakapswIRYGiV+y9aXi0vQdSUpLDiXMZCkdU0S4XEi1qZhzHF/IpsrTkS
+neFc5p5QN7D1f0vDWBAsCwvRx/jzyeO1ewmVmopQH3ZFFDbA/9JuNl3Lf+AmtQKM
+SVRH3ZtMnVVRfOm9EU+JT8ydpMENtkXZ8poh4byHZq9uPoVveHQaK8TKlBhcqwWJ
+dIp/XTcHSLaTDeOR7ZVqy+WYMGLwP5IiHnisd1B1ytu0JSPwCWwT8XxKIqvNYt63
+1wkym98nxsqimL2bRPlXRcR+oPXOInAkJfVIPN29tRExMYudJpDgerRJ/8watZaC
+r7qOgpi5346kVJONZot9KOtoJWxhwHis972HHeXaF5HuaRVfMkfo7QdFDfC9MoDD
+XtfPqdHsPxfXy8tr44uChn3neKNbn6lXQEdkbp4DZ7voX/3k2AHClLWdoL7X2D3j
+XfOD7Zc0ek6p1BaHXmhFj3JD7uYnNCfPFFEAdHvOf0ff6tpx81sgJnI3hZ5VKQey
+JcupIfbJSXq9UIeRwfriinAZYqoRrS4H5UhZ2sf+rPrwdMnhvZ8Ok63EKUDh1Rfj
+WxtIBtErguDy/AaiTh57c1Q1qDEh2XpsyyN3zBJCERVb+hGhIWVrWgMN9wARAQAB
+tB9UZXN0IFBhc3NNYW4gPHRlc3RAcGFzc21hbi5vcmc+iQI5BBMBAgAjBQJTyzaL
+AhsvBwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQs4wwf2hmM2wKbQ/+OSRS
+LTlJKe9+RwsVXvq555NNwMUnzF99PmAcr5RPFPODkNegnRPRuWYGKCWhN0I/EjAA
+1WLlMl4O8ti2dBsQCxzaPmWyIRKrYpsj4E6LyyleMHuaLxuvrsUpgCqFs1MZm3RG
+rITtQgGk9nx/5XqYavCbXLormgOQL8s/4bCfq6Anb9uEdl2hJW90d94kDde0XaLv
+tVue7xWXoAb4yZGB/4VkZ1jTu1pZ3qj3RHo3l/sSu+gPkJs46yLcZKTjetAT5izb
+OshVLK3mE2VvKGopon/5UaQxSCRXs9WndXhFGZlC2zFDJRpBBpeAoZgsX9f9fd+N
+/8vxzlhPmQi23gK/oOev2Tw4PDrPBjoV/8QbwuE4jiGbnafn9BrUMvXm6y9y4r8w
+QL6bOVDEgm0lX45SwPdgHic1/cyxQhY6mLvocqXmUmg6ojRQuLDfTE2D9qLLblq6
+/7vXA7otaaDqv3hrBnxt14adfwF/l4JpnGZ+ykPrs2G7L6/hOSQbJQZeS9DPO4pp
+I23NKc2zYPy4vWs+8JDWCKPYx9rHXOUg4S4lK30JLBcGY8iy4lk8pjdPA+A5wm8b
+uLq0G2p6mkXNMG1jVkXGVbWKFHVHHrVjlfK6BNWjpU3YQvMY17QVVLK1Q4ple3FC
+RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
+=2wJ9
+-----END PGP PUBLIC KEY BLOCK-----
+		</script>
+		<style>
+			/*
+			* Global add-ons
+			*/
+			.sub-header {
+				padding-bottom: 10px;
+				border-bottom: 1px solid #eee;
+			}
+
+			/*
+			* Top navigation
+			* Hide default border to remove 1px line.
+			*/
+			.navbar-fixed-top {
+				border: 0;
+			}
+
+			/*
+			* Sidebar
+			*/
+			/* Hide for mobile, show later */
+			.sidebar {
+				display: none;
+			}
+			@media (min-width: 768px) {
+				.sidebar {
+					position: fixed;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					z-index: 1000;
+					display: block;
+					padding: 20px;
+					overflow-x: hidden;
+					overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+					background-color: #f5f5f5;
+					border-right: 1px solid #eee;
+				}
+			}
+
+			/* Sidebar navigation */
+			.nav-sidebar {
+				margin-right: -21px; /* 20px padding + 1px border */
+				margin-bottom: 20px;
+				margin-left: -20px;
+			}
+			.nav-sidebar > li > a {
+				padding-right: 20px;
+				padding-left: 20px;
+			}
+			.nav-sidebar > .active > a,
+			.nav-sidebar > .active > a:hover,
+			.nav-sidebar > .active > a:focus {
+				color: #fff;
+				background-color: #428bca;
+			}
+
+
+			/*
+			* Main content
+			*/
+			.main {
+				padding: 20px;
+			}
+			@media (min-width: 768px) {
+				.main {
+					padding-right: 40px;
+					padding-left: 40px;
+				}
+			}
+			.main .page-header {
+				margin-top: 0;
+			}
+
+			/*
+			* Placeholder dashboard ideas
+			*/
+			.placeholders {
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			.placeholders h4 {
+				margin-bottom: 0;
+			}
+			.placeholder {
+				margin-bottom: 20px;
+			}
+			.placeholder img {
+				display: inline-block;
+				border-radius: 50%;
+			}
+
+			#progress_bar {
+				margin: 10px 0;
+				padding: 3px;
+				border: 1px solid #000;
+				font-size: 14px;
+				clear: both;
+				opacity: 0;
+				-moz-transition: opacity 1s linear;
+				-o-transition: opacity 1s linear;
+				-webkit-transition: opacity 1s linear;
+			}
+			#progress_bar.loading {
+				opacity: 1.0;
+			}
+			#progress_bar .percent {
+				background-color: #99ccff;
+				height: auto;
+				width: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main_container" class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li id="overview" class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Overview</a></li>
+						<li><a href="#" data-toggle="modal" data-target="#setup"><span class="glyphicon glyphicon-cog"></span> Setup Security</a></li>
+						<li><a href="#" data-toggle="modal" data-target="#storage-manager"><span class="glyphicon glyphicon-open"></span><span class="glyphicon glyphicon-save"></span> Load/Save Wallet</a></li>
+						<li><a href="#" data-bind="click: addIdentity"><span class="glyphicon glyphicon-plus"></span> Add Identity</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+					<h1 class="page-header">PassMan Web Wallet</h1>
+					<p>This wallet is intended for people who already have a (at least) minimal user knowledge of PGP system.</p>
+					<h2>Your identities <span class="badge" style="font-size: 22px;" data-bind="text: identities().length"></span></h2>
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Url</th>
+									<th>Password</th>
+									<th>Description</th>
+									<th>
+										<span class="consolidate btn btn-default glyphicon glyphicon-ok" alt="Consolidate All" data-bind="click: consolidate"></span>
+										<span class="btn btn-default glyphicon glyphicon-remove" alt="Remove All" data-bind="click: removeAll"></span>
+									</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: identities">
+								<tr>
+									<td>
+										<span data-bind="ifnot: consolidated"><input data-bind="value: name" /></span>
+										<span data-bind="if: consolidated"><span data-bind="text: name"></span></span>
+									</td>
+									<td>
+										<span data-bind="ifnot: consolidated"><input data-bind="value: url" /></span>
+										<span data-bind="if: consolidated"><span data-bind="text: url"></span></span>
+									</td>
+									<td>
+										<span data-bind="if: shouldShowPassword"><input data-bind="value: password" /></span>
+										<span data-bind="ifnot: shouldShowPassword"><span data-bind="text: maskedPassword"></span></span>
+										<span class="glyphicon glyphicon-eye-close" data-bind="click: $root.toggleShowPassword" alt="Show/Hide Password"></span>
+									</td>
+									<td>
+										<span data-bind="ifnot: consolidated"><input data-bind="value: description" /></span>
+										<span data-bind="if: consolidated"><span data-bind="text: description"></span></span>
+									</td>
+									<td>
+										<span data-bind="ifnot: consolidated">
+											<span class="consolidate glyphicon glyphicon-ok" alt="Consolidate" data-bind="click: $root.toggleConsolidate"></span>
+											<span class="fa fa-undo" alt="Clear" data-bind="click: $root.clearRow"></span>
+										</span>
+										<span class="glyphicon glyphicon-remove" alt="Remove" data-bind="click: $root.removeIdentity"></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div id="debug"></div>
+		</div>
+		<div id="dialogs">
+			<div class="modal fade" id="setup" tabindex="-1" role="dialog" aria-labelledby="setupLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<h4 class="modal-title" id="setupLabel">Security Setup</h4>
+						</div>
+						<div class="modal-body">
+							<table>
+								<thead>
+									<tr>
+										<th colspan="2">Please input your keys in order to start working with your passwords file:</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<th>Private key:</th>
+										<td><textarea id="pgp-private"></textarea></td>
+									</tr>
+									<tr>
+										<th>Public key:</th>
+										<td><textarea id="pgp-public"></textarea></td>
+									</tr>
+									<tr>
+										<th>Passphrase:</th>
+										<td><input type="password" id="pgp-passphrase"></input></td>
+									</tr>
+								</tbody>
+							</table>
+							<button onclick="testPgp();">Input test values</button>
+							<button onclick="checkFileAPI();">Check File APIs</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="storage-manager" tabindex="-1" role="dialog" aria-labelledby="storageManagerLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<h4 class="modal-title" id="storageManagerLabel">Load/Save Wallet</h4>
+						</div>
+						<div class="modal-body">
+							<input id="save-filename" type="text" value="PWDs.txt.asc" placeholder="filename.txt.asc">
+							<button data-bind="click: save">Save as</button><output></output>
+							<hr />
+							<button onclick="abortRead();">Cancel read</button>
+							<div id="progress_bar"><div class="percent">0%</div></div>
+							<input type="file" id="file" />
+							<button data-bind="click: load">Load from</button>
+							<button onclick="clearInputFile('file'); document.getElementById('file-list').innerHTML = '';">Clear</button>
+							<output id="file-list"></output>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		$('button.close').click(function() {
+			$('#overview').addClass('active');
+			$('#overview').siblings().removeClass('active');
+		});
+		$('.consolidate').click(function() {
+			$('#overview').addClass('active');
+			$('#overview').siblings().removeClass('active');
+		});
+		$('ul.nav li').click(function() {
+			$(this).addClass('active');
+			$(this).siblings().removeClass('active');
+		});
+
+		var contents = '';
+		var reader;
+		var progress = document.querySelector('.percent');
+
+		function abortRead() {
+			reader.abort();
+		}
+
+		function errorHandler(evt) {
+			switch(evt.target.error.code) {
+			case evt.target.error.NOT_FOUND_ERR:
+				alert('File Not Found!');
+				break;
+			case evt.target.error.NOT_READABLE_ERR:
+				alert('File is not readable');
+				break;
+			case evt.target.error.ABORT_ERR:
+				break; // noop
+			default:
+				alert('An error occurred reading this file.');
+			};
+		}
+
+		function updateProgress(evt) {
+			// evt is an ProgressEvent.
+			if (evt.lengthComputable) {
+				var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+				// Increase the progress bar length.
+				if (percentLoaded < 100) {
+					progress.style.width = percentLoaded + '%';
+					progress.textContent = percentLoaded + '%';
+				}
+			}
+		}
+
+		function handleFileSelect(evt) {
+			// Reset progress indicator on new file selection.
+			progress.style.width = '0%';
+			progress.textContent = '0%';
+
+			reader = new FileReader();
+			reader.onerror = errorHandler;
+			reader.onprogress = updateProgress;
+			reader.onabort = function(e) {
+				alert('File read cancelled');
+			};
+			reader.onloadstart = function(e) {
+				document.getElementById('progress_bar').className = 'loading';
+			};
+			reader.onload = function(e) {
+				contents = e.target.result;
+
+				// Ensure that the progress bar displays 100% at the end.
+				progress.style.width = '100%';
+				progress.textContent = '100%';
+				setTimeout("closeProgressBar();", 2000);
+			}
+
+			reader.readAsText(evt.target.files[0]);
+			var save_filename = document.getElementById('save-filename');
+			save_filename.value = evt.target.files[0].name;
+
+			var files = evt.target.files; // FileList object
+
+			// files is a FileList of File objects. List some properties.
+			var output = [];
+			for (var i = 0, f; f = files[i]; i++) {
+			output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+						f.size, ' bytes, last modified: ',
+						f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+						'</li>');
+			}
+			document.getElementById('file-list').innerHTML = '<ul>' + output.join('') + '</ul>';
+		}
+
+		document.getElementById('file').addEventListener('change', handleFileSelect, false);
+
+		function closeProgressBar() {
+			var pb = document.getElementById('progress_bar');
+			pb.className='';
+		}
+
+		function clearInputFile(name, file_list) {
+			var inputFile = document.getElementById(name);
+			try {
+				inputFile.value = '';
+				if(inputFile.value) {
+					inputFile.type = "text";
+					inputFile.type = "file";
+				}
+			} catch(e) { }
+		}
+
+		function checkFileAPI() {
+			// Check for the various File API support.
+			if (window.File && window.FileReader && window.FileList && window.Blob) {
+				alert('Great success! All the File APIs are supported.');
+			} else {
+				alert('The File APIs are not fully supported in this browser.');
+			}
+		}
+
+		var output = document.querySelector('output');
+
+		const MIME_TYPE = 'text/plain';
+
+		// Rockstars use event delegation!
+		document.body.addEventListener('dragstart', function(e) {
+			var a = e.target;
+			if (a.classList.contains('dragout')) {
+				e.dataTransfer.setData('DownloadURL', a.dataset.downloadurl);
+			}
+		}, false);
+
+		document.body.addEventListener('dragend', function(e) {
+			var a = e.target;
+			if (a.classList.contains('dragout')) {
+				cleanUp(a);
+			}
+		}, false);
+
+		var cleanUp = function(a) {
+			a.textContent = 'Downloaded';
+			a.dataset.disabled = true;
+
+			// Need a small delay for the revokeObjectURL to work properly.
+			setTimeout(function() {
+				window.URL.revokeObjectURL(a.href);
+			}, 1500);
+		};
+
+		var downloadFile = function(content) {
+			window.URL = window.webkitURL || window.URL;
+
+			var prevLink = output.querySelector('a');
+			if (prevLink) {
+				window.URL.revokeObjectURL(prevLink.href);
+				output.innerHTML = '';
+			}
+
+			var bb = new Blob([content], {type: MIME_TYPE});
+
+			var a = document.createElement('a');
+			a.download = $('#save-filename').val();
+			a.href = window.URL.createObjectURL(bb);
+			a.textContent = 'Download ready';
+
+			a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+			a.draggable = true; // Don't really need, but good practice.
+			a.classList.add('dragout');
+
+			output.appendChild(a);
+
+			a.onclick = function(e) {
+				if ('disabled' in this.dataset) {
+				return false;
+				}
+
+				cleanUp(this);
+			};
+		};
+
+		function testPgp() {
+			document.getElementById('pgp-private').value = document.getElementById('test-pgp-private').innerText;
+			document.getElementById('pgp-public').value = document.getElementById('test-pgp-public').innerText;
+			document.getElementById('pgp-passphrase').value = 'password';
+		}
+
+		function encrypt(message) {
+			var key = document.getElementById('pgp-public').value;
+			var publicKey = openpgp.key.readArmored(key);
+
+			var pgpMessage = openpgp.encryptMessage(publicKey.keys, message);
+
+			return pgpMessage;
+		}
+
+		function decrypt(message) {
+			var passphrase = document.getElementById('pgp-passphrase').value;
+			var key = document.getElementById('pgp-private').value;
+			var privateKey = openpgp.key.readArmored(key).keys[0];
+			privateKey.decrypt(passphrase);
+
+			message = openpgp.message.readArmored(message);
+			var plaintext = openpgp.decryptMessage(privateKey, message);
+
+			return plaintext;
+		}
+
+		function WebSiteIdentity(name, url, password, description) {
+			var self = this;
+
+			self.name = ko.observable(name);
+			self.url = ko.observable(url);
+			self.password = ko.observable(password);
+			self.description = ko.observable(description);
+			self.shouldShowPassword = ko.observable(true);
+			self.consolidated = ko.observable(false);
+
+			self.maskedPassword = ko.computed(function() {
+				var ret = '';
+				var len = self.password().length;
+				for (i = 0; i < len; i++) {
+					ret += '*';
+				}
+				if (ret.length > 0) {
+					self.shouldShowPassword(false);
+				}
+				return ret;
+			}, self);
+		};
+
+		function IdentitiesViewModel() {
+			var self = this;
+
+			// Editable data
+			self.identities = ko.observableArray([]);
+
+			// Operations
+			self.addIdentity = function () {
+				self.identities.push(new WebSiteIdentity("New Site", "https://www.example.com", "password", "No need for description"));
+			};
+
+			self.consolidate = function () {
+				for (i = 0; i < self.identities().length; i++) {
+					var id = self.identities()[i];
+					if (id != null) { id.consolidated(true); }
+				}
+			};
+
+			self.save = function () {
+				var ids = [];
+				for (i = 0; i < self.identities().length; i++) {
+					var id = self.identities()[i];
+					if (id != null && id.consolidated() == true) {
+						ids.push({ name: id.name(), url: id.url(), password: id.password(), description: id.description() });
+					}
+				}
+				var unenc = ko.toJSON(ids, null, 2);
+				var enc = encrypt(unenc);
+				downloadFile(enc);
+			};
+
+			self.load = function () {
+				var debuglog = document.getElementById('debug');
+				var unenc = decrypt(contents);
+				var ids = JSON.parse(unenc);
+				var id;
+				var wsi;
+				do {
+					id = ids.pop();
+					if (id != null) {
+						wsi = new WebSiteIdentity(id.name, id.url, id.password, id.description);
+						wsi.shouldShowPassword(false);
+						wsi.consolidated(true);
+						self.identities.push(wsi);
+					}
+				} while (id != null);
+			};
+
+			self.removeAll = function () {
+				var ids = [];
+				for (i = 0; i < self.identities().length; i++) {
+					var id = self.identities()[i];
+					if (id != null) {
+						ids.push(id);
+					}
+				}
+				do {
+					var id = ids.pop();
+					if (id != null) {
+						self.identities.remove(id);
+					}
+				} while (id != null);
+			};
+
+			self.toggleShowPassword = function (identity) {
+				var curr = identity.shouldShowPassword();
+				identity.shouldShowPassword(!curr);
+			};
+
+			self.removeIdentity = function (identity) {
+				self.identities.remove(identity);
+			};
+
+			self.toggleConsolidate = function (identity) {
+				var curr = identity.consolidated();
+				identity.consolidated(!curr);
+			};
+
+			self.clearRow = function (identity) {
+				self.removeIdentity(identity);
+				self.addIdentity();
+			};
+		};
+
+		ko.applyBindings(new IdentitiesViewModel());
+	</script>
+</html>

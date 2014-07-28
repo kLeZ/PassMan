@@ -63,8 +63,7 @@
 		<script src="https://github.com/openpgpjs/openpgpjs/releases/download/v0.7.1/openpgp.min.js"></script>
 		<script src="https://github.com/openpgpjs/openpgpjs/releases/download/v0.7.1/openpgp.worker.min.js"></script>
 
-		<script id="test-pgp-private" type="application/pgp-encrypted">
------BEGIN PGP PRIVATE KEY BLOCK-----
+		<script id="test-pgp-private" type="application/pgp-encrypted">-----BEGIN PGP PRIVATE KEY BLOCK-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
 lQc+BFPLNosBEACyqcJh8PBgfBlulH4Y9gri0YYm1ryzn1xQ099y9jsk/BAeVPCR
@@ -120,10 +119,8 @@ CKPYx9rHXOUg4S4lK30JLBcGY8iy4lk8pjdPA+A5wm8buLq0G2p6mkXNMG1jVkXG
 VbWKFHVHHrVjlfK6BNWjpU3YQvMY17QVVLK1Q4ple3FCRtVVpgy8wtT69S3YU1yx
 mhNalkPdurPbRzO1fC8=
 =jpE7
------END PGP PRIVATE KEY BLOCK-----
-		</script>
-		<script id="test-pgp-public" type="application/pgp-encrypted">
------BEGIN PGP PUBLIC KEY BLOCK-----
+-----END PGP PRIVATE KEY BLOCK-----</script>
+		<script id="test-pgp-public" type="application/pgp-encrypted">-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
 mQINBFPLNosBEACyqcJh8PBgfBlulH4Y9gri0YYm1ryzn1xQ099y9jsk/BAeVPCR
@@ -151,8 +148,7 @@ I23NKc2zYPy4vWs+8JDWCKPYx9rHXOUg4S4lK30JLBcGY8iy4lk8pjdPA+A5wm8b
 uLq0G2p6mkXNMG1jVkXGVbWKFHVHHrVjlfK6BNWjpU3YQvMY17QVVLK1Q4ple3FC
 RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 =2wJ9
------END PGP PUBLIC KEY BLOCK-----
-		</script>
+-----END PGP PUBLIC KEY BLOCK-----</script>
 		<style>
 			/*
 			* Global add-ons
@@ -290,8 +286,8 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 									<th>Password</th>
 									<th>Description</th>
 									<th>
-										<span class="consolidate btn btn-default glyphicon glyphicon-ok" alt="Consolidate All" data-bind="click: consolidate"></span>
-										<span class="btn btn-default glyphicon glyphicon-remove" alt="Remove All" data-bind="click: removeAll"></span>
+										<span class="consolidate glyphicon glyphicon-ok" alt="Consolidate All" data-bind="click: consolidate"></span>
+										<span class="glyphicon glyphicon-remove" alt="Remove All" data-bind="click: removeAll"></span>
 									</th>
 								</tr>
 							</thead>
@@ -355,10 +351,17 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 									</tr>
 									<tr>
 										<th>Passphrase:</th>
-										<td><input class="form-control" type="password" id="pgp-passphrase"></input></td>
+										<td>
+											<div class="input-group">
+												<input class="form-control" type="password" id="pgp-passphrase"></input>
+												<span class="input-group-addon btn glyphicon glyphicon-eye-close toggle-view-password"></span>
+											</div>
+										</td>
 									</tr>
 								</tbody>
 							</table>
+						</div>
+						<div class="modal-footer">
 							<button class="btn btn-primary" onclick="testPgp();">Input test values</button>
 							<button class="btn btn-primary" onclick="checkFileAPI();">Check File APIs</button>
 						</div>
@@ -374,13 +377,13 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 						</div>
 						<div class="modal-body">
 							<input id="save-filename" type="text" value="PWDs.txt.asc" placeholder="filename.txt.asc">
-							<button data-bind="click: save">Save as</button><output></output>
+							<button class="btn btn-primary" data-bind="click: save">Save as</button><output></output>
 							<hr />
-							<button onclick="abortRead();">Cancel read</button>
+							<button class="btn btn-primary" onclick="abortRead();">Cancel read</button>
 							<div id="progress_bar"><div class="percent">0%</div></div>
 							<input type="file" id="file" />
-							<button data-bind="click: load">Load from</button>
-							<button onclick="clearInputFile('file'); document.getElementById('file-list').innerHTML = '';">Clear</button>
+							<button class="btn btn-primary" data-bind="click: load">Load from</button>
+							<button class="btn btn-primary" onclick="clearInputFile('file'); document.getElementById('file-list').innerHTML = '';">Clear</button>
 							<output id="file-list"></output>
 						</div>
 					</div>
@@ -389,6 +392,10 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 		</div>
 	</body>
 	<script type="text/javascript">
+		$('span.toggle-view-password').click(function() {
+			$(this).closest('input[type=password]').attr('type', 'text');
+			$(this).closest('input[type=text]').attr('type', 'password');
+		});
 		$('button.close').click(function() {
 			$('#overview').addClass('active');
 			$('#overview').siblings().removeClass('active');
@@ -565,8 +572,8 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 		};
 
 		function testPgp() {
-			document.getElementById('pgp-private').value = document.getElementById('test-pgp-private').innerText;
-			document.getElementById('pgp-public').value = document.getElementById('test-pgp-public').innerText;
+			document.getElementById('pgp-private').value = $('#test-pgp-private').text();
+			document.getElementById('pgp-public').value = $('#test-pgp-public').text();
 			document.getElementById('pgp-passphrase').value = 'password';
 		}
 

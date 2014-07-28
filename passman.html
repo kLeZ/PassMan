@@ -341,7 +341,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				self.consolidate = function() {
 					for (i = 0; i < self.items().length; i++) {
 						var id = self.items()[i];
-						if (id != null) { id.consolidated(true); }
+						if (id != null) { self.toggleConsolidate(id); }
 					}
 				};
 
@@ -412,6 +412,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				self.toggleConsolidate = function(identity) {
 					var curr = identity.consolidated();
 					identity.consolidated(!curr);
+					identity.shouldShowPassword(curr);
 				};
 
 				self.clearRow = function(identity) {
@@ -453,30 +454,48 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 							<tbody data-bind="foreach: pagedItems">
 								<tr>
 									<td>
-										<span data-bind="ifnot: consolidated"><input data-bind="value: name" /></span>
-										<span data-bind="if: consolidated"><!--ko text: name--><!--/ko--></span>
+									<!-- ko ifnot: consolidated -->
+										<input class="form-control" data-bind="value: name" />
+									<!-- /ko -->
+									<!-- ko if: consolidated -->
+										<span data-bind="text: name"></span>
+									<!-- /ko -->
 									</td>
 									<td>
-										<span data-bind="ifnot: consolidated"><input data-bind="value: url" /></span>
-										<span data-bind="if: consolidated"><!--ko text: url--><!--/ko--></span>
+									<!-- ko ifnot: consolidated -->
+										<input class="form-control" data-bind="value: url" />
+									<!-- /ko -->
+									<!-- ko if: consolidated -->
+										<span data-bind="text: url"></span>
+									<!-- /ko -->
 									</td>
 									<td>
-										<span data-bind="if: shouldShowPassword"><input data-bind="value: password" /></span>
-										<span data-bind="ifnot: shouldShowPassword"><!--ko text: maskedPassword--><!--/ko--></span>
-										<span class="glyphicon glyphicon-eye-close btn" data-bind="click: $root.toggleShowPassword" alt="Show/Hide Password"></span>
+										<div class="input-group">
+										<!-- ko ifnot: shouldShowPassword -->
+											<span class="form-control" data-bind="text: maskedPassword"></span>
+										<!-- /ko -->
+										<!-- ko if: shouldShowPassword -->
+											<input class="form-control" data-bind="value: password" />
+										<!-- /ko -->
+											<span class="glyphicon glyphicon-eye-close btn input-group-addon" data-bind="click: $root.toggleShowPassword" alt="Show/Hide Password"></span>
+										</div>
 									</td>
 									<td>
-										<span data-bind="ifnot: consolidated"><input data-bind="value: description" /></span>
-										<span data-bind="if: consolidated"><!--ko text: description--><!--/ko--></span>
+									<!-- ko ifnot: consolidated -->
+										<input class="form-control" data-bind="value: description" />
+									<!-- /ko -->
+									<!-- ko if: consolidated -->
+										<span data-bind="text: description"></span>
+									<!-- /ko -->
 									</td>
 									<td>
-										<span data-bind="ifnot: consolidated">
-											<span class="consolidate glyphicon glyphicon-ok btn" alt="Consolidate" data-bind="click: $root.toggleConsolidate"></span>
-											<span class="fa fa-undo btn" alt="Clear" data-bind="click: $root.clearRow"></span>
-										</span>
-										<span data-bind="if: consolidated">
-											<span class="consolidate glyphicon glyphicon-edit btn" alt="Edit" data-bind="click: $root.toggleConsolidate"></span>
-										</span>
+									<!-- ko ifnot: consolidated -->
+										<span class="consolidate glyphicon glyphicon-ok btn" alt="Consolidate" data-bind="click: $root.toggleConsolidate"></span>
+										<span class="fa fa-undo btn" alt="Clear" data-bind="click: $root.clearRow"></span>
+									<!-- /ko -->
+									<!-- ko if: consolidated -->
+										<span class="consolidate glyphicon glyphicon-edit btn" alt="Edit" data-bind="click: $root.toggleConsolidate"></span>
+									<!-- /ko -->
 										<span class="glyphicon glyphicon-remove btn" alt="Remove" data-bind="click: $root.removeIdentity"></span>
 									</td>
 								</tr>

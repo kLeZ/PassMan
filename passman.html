@@ -393,8 +393,8 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 	</body>
 	<script type="text/javascript">
 		$('span.toggle-view-password').click(function() {
-			$(this).closest('input[type=password]').attr('type', 'text');
-			$(this).closest('input[type=text]').attr('type', 'password');
+			$(this).parent().find('input[type="password"]').attr('type', 'text');
+			$(this).parent().find('input[type="text"]').attr('type', 'password');
 		});
 		$('button.close').click(function() {
 			$('#overview').addClass('active');

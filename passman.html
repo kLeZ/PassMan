@@ -312,6 +312,196 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				width: 100%;
 			}
 		</style>
+		<script id="wallet-upload" type="text/javascript">
+			var contents = '';
+			var reader;
+			var progress = document.querySelector('.percent');
+
+			function abortRead() {
+				reader.abort();
+			}
+
+			function errorHandler(evt) {
+				switch(evt.target.error.code) {
+				case evt.target.error.NOT_FOUND_ERR:
+					alert('File Not Found!');
+					break;
+				case evt.target.error.NOT_READABLE_ERR:
+					alert('File is not readable');
+					break;
+				case evt.target.error.ABORT_ERR:
+					break; // noop
+				default:
+					alert('An error occurred reading this file.');
+				};
+			}
+
+			function closeProgressBar() {
+				$('#progress_bar').removeClass('loading');
+			}
+
+			function updateProgress(evt) {
+				// evt is an ProgressEvent.
+				if (evt.lengthComputable) {
+					var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+					// Increase the progress bar length.
+					if (percentLoaded < 100) {
+						progress.style.width = percentLoaded + '%';
+						progress.textContent = percentLoaded + '%';
+					}
+				}
+			}
+
+			function handleFileSelect(evt) {
+				// Reset progress indicator on new file selection.
+				progress.style.width = '0%';
+				progress.textContent = '0%';
+
+				reader = new FileReader();
+				reader.onerror = errorHandler;
+				reader.onprogress = updateProgress;
+				reader.onabort = function(e) {
+					alert('File read cancelled');
+				};
+				reader.onloadstart = function(e) {
+					$('#progress_bar').addClass('loading');
+				};
+				reader.onload = function(e) {
+					contents = e.target.result;
+
+					// Ensure that the progress bar displays 100% at the end.
+					progress.style.width = '100%';
+					progress.textContent = '100%';
+					setTimeout("closeProgressBar();", 2000);
+				}
+
+				reader.readAsText(evt.target.files[0]);
+				$('#save-filename').val(evt.target.files[0].name);
+
+				var files = evt.target.files; // FileList object
+
+				// files is a FileList of File objects. List some properties.
+				var output = [];
+				for (var i = 0, f; f = files[i]; i++) {
+				output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+							f.size, ' bytes, last modified: ',
+							f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+							'</li>');
+				}
+				$('#file-list').html('<ul>' + output.join('') + '</ul>');
+			}
+
+			$('#pwd-file-upload').change(handleFileSelect);
+		</script>
+		<script id="wallet-download" type="text/javascript">
+			const MIME_TYPE = 'text/plain';
+
+			// Rockstars use event delegation!
+			$('.dragout').draggable({
+				start: function(e) { e.dataTransfer.setData('DownloadURL', e.target.dataset.downloadurl); },
+				stop: function(e) { cleanUp(e.target); }
+			});
+
+			function cleanUp(a) {
+				a.textContent = 'Downloaded';
+				a.dataset.disabled = true;
+
+				// Need a small delay for the revokeObjectURL to work properly.
+				setTimeout(function() {
+					window.URL.revokeObjectURL(a.href);
+				}, 1500);
+			}
+
+			function downloadFile(content) {
+				window.URL = window.webkitURL || window.URL;
+
+				var prevLink = $('#download-output > a').get();
+				if (prevLink) {
+					window.URL.revokeObjectURL(prevLink.href);
+					$('#download-output').html('');
+				}
+
+				var bb = new Blob([content], {type: MIME_TYPE});
+
+				var a = document.createElement('a');
+				a.download = $('#save-filename').val();
+				a.href = window.URL.createObjectURL(bb);
+				a.textContent = 'Download ready';
+
+				a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+				a.draggable = true; // Don't really need, but good practice.
+				a.classList.add('dragout');
+
+				$('#download-output').append(a);
+
+				$(a).click(function() {
+					if ('disabled' in this.dataset) {
+						return false;
+					}
+					cleanUp(this);
+				});
+			}
+		</script>
+		<script id="function-utilities" type="text/javascript">
+			function clickPgp() {
+				$('#pgp-private').val('');
+				$('#pgp-public').val('');
+				$('#pgp-passphrase').val('');
+			}
+
+			function testPgp() {
+				$('#pgp-private').val($('#test-pgp-private').text());
+				$('#pgp-public').val($('#test-pgp-public').text());
+				$('#pgp-passphrase').val('password');
+			}
+
+			function encrypt(message) {
+				var key = $('#pgp-public').val();
+				var publicKey = openpgp.key.readArmored(key);
+				var pgpMessage = openpgp.encryptMessage(publicKey.keys, message);
+				return pgpMessage;
+			}
+
+			function decrypt(message) {
+				var passphrase = $('#pgp-passphrase').val();
+				var key = $('#pgp-private').val();
+				var privateKey = openpgp.key.readArmored(key).keys[0];
+				privateKey.decrypt(passphrase);
+
+				message = openpgp.message.readArmored(message);
+				var plaintext = openpgp.decryptMessage(privateKey, message);
+
+				return plaintext;
+			}
+
+			function clearInputFile(name, file_list) {
+				try {
+					$(name).empty();
+					if($(name).val()) {
+						$(name).attr('type', 'text');
+						$(name).attr('type', 'file');
+					}
+					$(name).filestyle('clear');
+					$(file_list).empty();
+				} catch(e) { }
+			}
+
+			function checkFileAPI() {
+				// Check for the various File API support.
+				if (window.File && window.FileReader && window.FileList && window.Blob) {
+					alert('Great success! All the File APIs are supported.');
+				} else {
+					alert('The File APIs are not fully supported in this browser.');
+				}
+			}
+
+			function getParameterByName(name) {
+				name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+				var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+					results = regex.exec(location.search);
+				return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+			}
+		</script>
 		<script id="model" type="text/javascript">
 			function WebSiteIdentity(name, url, password, description) {
 				var self = this;
@@ -598,8 +788,10 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button class="btn btn-primary" onclick="testPgp();" data-dismiss="modal">Input test values</button>
-							<button class="btn btn-primary" onclick="checkFileAPI();">Check File APIs</button>
+							<button class="btn btn-primary" data-dismiss="modal">Ok</button>
+							<button class="btn btn-default" onclick="clickPgp();">Clear</button>
+							<button class="btn btn-default" onclick="testPgp();" data-dismiss="modal">Input test values</button>
+							<button class="btn btn-default" onclick="checkFileAPI();">Check File APIs</button>
 						</div>
 					</div>
 				</div>
@@ -616,7 +808,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 								<div class="form-group">
 									<label for="save-filename">Save your wallet</label>
 									<input id="save-filename" type="text" value="PWDs.txt.asc" placeholder="filename.txt.asc">
-									<button class="btn btn-primary" data-bind="click: save">Save as</button><output></output>
+									<button class="btn btn-default" data-bind="click: save">Save as</button><output id="download-output"></output>
 								</div>
 								<div class="form-group">
 									<label for="pwd-file-upload">Load your wallet</label>
@@ -625,9 +817,9 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 									<div id="progress_bar"><div class="percent">0%</div></div>
 								</div>
 								<div class="form-group">
-									<button class="btn btn-primary" data-bind="click: load" data-dismiss="modal">Load from</button>
-									<button class="btn btn-primary" onclick="abortRead();">Cancel read</button>
-									<button class="btn btn-primary" onclick="clearInputFile('#pwd-file-upload', '#file-list');">Clear</button>
+									<button class="btn btn-default" data-bind="click: load" data-dismiss="modal">Load from</button>
+									<button class="btn btn-default" onclick="abortRead();">Cancel read</button>
+									<button class="btn btn-default" onclick="clearInputFile('#pwd-file-upload', '#file-list');">Clear</button>
 								</div>
 							</div>
 						</div>
@@ -648,7 +840,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 			</div>
 		</div>
 	</body>
-	<script type="text/javascript">
+	<script id="document-ready" type="text/javascript">
 		$(document).ready(function() {
 			var viewModel = new IdentitiesViewModel();
 
@@ -706,198 +898,5 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 
 			ko.applyBindings(viewModel);
 		});
-
-		var contents = '';
-		var reader;
-		var progress = document.querySelector('.percent');
-
-		function abortRead() {
-			reader.abort();
-		}
-
-		function errorHandler(evt) {
-			switch(evt.target.error.code) {
-			case evt.target.error.NOT_FOUND_ERR:
-				alert('File Not Found!');
-				break;
-			case evt.target.error.NOT_READABLE_ERR:
-				alert('File is not readable');
-				break;
-			case evt.target.error.ABORT_ERR:
-				break; // noop
-			default:
-				alert('An error occurred reading this file.');
-			};
-		}
-
-		function updateProgress(evt) {
-			// evt is an ProgressEvent.
-			if (evt.lengthComputable) {
-				var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-				// Increase the progress bar length.
-				if (percentLoaded < 100) {
-					progress.style.width = percentLoaded + '%';
-					progress.textContent = percentLoaded + '%';
-				}
-			}
-		}
-
-		function handleFileSelect(evt) {
-			// Reset progress indicator on new file selection.
-			progress.style.width = '0%';
-			progress.textContent = '0%';
-
-			reader = new FileReader();
-			reader.onerror = errorHandler;
-			reader.onprogress = updateProgress;
-			reader.onabort = function(e) {
-				alert('File read cancelled');
-			};
-			reader.onloadstart = function(e) {
-				$('#progress_bar').addClass('loading');
-			};
-			reader.onload = function(e) {
-				contents = e.target.result;
-
-				// Ensure that the progress bar displays 100% at the end.
-				progress.style.width = '100%';
-				progress.textContent = '100%';
-				setTimeout("closeProgressBar();", 2000);
-			}
-
-			reader.readAsText(evt.target.files[0]);
-			$('#save-filename').val(evt.target.files[0].name);
-
-			var files = evt.target.files; // FileList object
-
-			// files is a FileList of File objects. List some properties.
-			var output = [];
-			for (var i = 0, f; f = files[i]; i++) {
-			output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-						f.size, ' bytes, last modified: ',
-						f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-						'</li>');
-			}
-			$('#file-list').html('<ul>' + output.join('') + '</ul>');
-		}
-
-		$('#pwd-file-upload').change(handleFileSelect);
-
-		var output = document.querySelector('output');
-
-		const MIME_TYPE = 'text/plain';
-
-		// Rockstars use event delegation!
-		document.body.addEventListener('dragstart', function(e) {
-			var a = e.target;
-			if (a.classList.contains('dragout')) {
-				e.dataTransfer.setData('DownloadURL', a.dataset.downloadurl);
-			}
-		}, false);
-
-		document.body.addEventListener('dragend', function(e) {
-			var a = e.target;
-			if (a.classList.contains('dragout')) {
-				cleanUp(a);
-			}
-		}, false);
-
-		var cleanUp = function(a) {
-			a.textContent = 'Downloaded';
-			a.dataset.disabled = true;
-
-			// Need a small delay for the revokeObjectURL to work properly.
-			setTimeout(function() {
-				window.URL.revokeObjectURL(a.href);
-			}, 1500);
-		};
-
-		var downloadFile = function(content) {
-			window.URL = window.webkitURL || window.URL;
-
-			var prevLink = output.querySelector('a');
-			if (prevLink) {
-				window.URL.revokeObjectURL(prevLink.href);
-				output.innerHTML = '';
-			}
-
-			var bb = new Blob([content], {type: MIME_TYPE});
-
-			var a = document.createElement('a');
-			a.download = $('#save-filename').val();
-			a.href = window.URL.createObjectURL(bb);
-			a.textContent = 'Download ready';
-
-			a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
-			a.draggable = true; // Don't really need, but good practice.
-			a.classList.add('dragout');
-
-			output.appendChild(a);
-
-			a.onclick = function(e) {
-				if ('disabled' in this.dataset) {
-					return false;
-				}
-
-				cleanUp(this);
-			};
-		};
-
-		function closeProgressBar() {
-			$('#progress_bar').removeClass('loading');
-		}
-
-		function clearInputFile(name, file_list) {
-			try {
-				$(name).empty();
-				if($(name).val()) {
-					$(name).attr('type', 'text');
-					$(name).attr('type', 'file');
-				}
-				$(name).filestyle('clear');
-				$(file_list).empty();
-			} catch(e) { }
-		}
-
-		function checkFileAPI() {
-			// Check for the various File API support.
-			if (window.File && window.FileReader && window.FileList && window.Blob) {
-				alert('Great success! All the File APIs are supported.');
-			} else {
-				alert('The File APIs are not fully supported in this browser.');
-			}
-		}
-
-		function getParameterByName(name) {
-			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-				results = regex.exec(location.search);
-			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-		}
-
-		function testPgp() {
-			$('#pgp-private').val($('#test-pgp-private').text());
-			$('#pgp-public').val($('#test-pgp-public').text());
-			$('#pgp-passphrase').val('password');
-		}
-
-		function encrypt(message) {
-			var key = $('#pgp-public').val();
-			var publicKey = openpgp.key.readArmored(key);
-			var pgpMessage = openpgp.encryptMessage(publicKey.keys, message);
-			return pgpMessage;
-		}
-
-		function decrypt(message) {
-			var passphrase = $('#pgp-passphrase').val();
-			var key = $('#pgp-private').val();
-			var privateKey = openpgp.key.readArmored(key).keys[0];
-			privateKey.decrypt(passphrase);
-
-			message = openpgp.message.readArmored(message);
-			var plaintext = openpgp.decryptMessage(privateKey, message);
-
-			return plaintext;
-		}
 	</script>
 </html>

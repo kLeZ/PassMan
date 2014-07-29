@@ -240,26 +240,6 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				border-radius: 50%;
 			}
 
-			#progress_bar {
-				margin: 10px 0;
-				padding: 3px;
-				border: 1px solid #000;
-				font-size: 14px;
-				clear: both;
-				opacity: 0;
-				-moz-transition: opacity 1s linear;
-				-o-transition: opacity 1s linear;
-				-webkit-transition: opacity 1s linear;
-			}
-			#progress_bar.loading {
-				opacity: 1.0;
-			}
-			#progress_bar .percent {
-				background-color: #99ccff;
-				height: auto;
-				width: 0;
-			}
-
 			table.table > tbody > tr > td {
 				width: 20%;
 			}
@@ -313,72 +293,16 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 			}
 		</style>
 		<script id="wallet-upload" type="text/javascript">
-			var contents = '';
-			var reader;
-			var progress = document.querySelector('.percent');
-
-			function abortRead() {
-				reader.abort();
-			}
-
-			function errorHandler(evt) {
-				switch(evt.target.error.code) {
-				case evt.target.error.NOT_FOUND_ERR:
-					alert('File Not Found!');
-					break;
-				case evt.target.error.NOT_READABLE_ERR:
-					alert('File is not readable');
-					break;
-				case evt.target.error.ABORT_ERR:
-					break; // noop
-				default:
-					alert('An error occurred reading this file.');
+			function upload(event) {
+				var file = event.target.files[0];
+				var fr = new FileReader();
+				fr.readAsText(file);
+				fr.onload = function(event) {
+					$('#uploaded-content').text(event.target.result);
 				};
-			}
+				$('#save-filename').val(event.target.files[0].name);
 
-			function closeProgressBar() {
-				$('#progress_bar').removeClass('loading');
-			}
-
-			function updateProgress(evt) {
-				// evt is an ProgressEvent.
-				if (evt.lengthComputable) {
-					var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-					// Increase the progress bar length.
-					if (percentLoaded < 100) {
-						progress.style.width = percentLoaded + '%';
-						progress.textContent = percentLoaded + '%';
-					}
-				}
-			}
-
-			function handleFileSelect(evt) {
-				// Reset progress indicator on new file selection.
-				progress.style.width = '0%';
-				progress.textContent = '0%';
-
-				reader = new FileReader();
-				reader.onerror = errorHandler;
-				reader.onprogress = updateProgress;
-				reader.onabort = function(e) {
-					alert('File read cancelled');
-				};
-				reader.onloadstart = function(e) {
-					$('#progress_bar').addClass('loading');
-				};
-				reader.onload = function(e) {
-					contents = e.target.result;
-
-					// Ensure that the progress bar displays 100% at the end.
-					progress.style.width = '100%';
-					progress.textContent = '100%';
-					setTimeout("closeProgressBar();", 2000);
-				}
-
-				reader.readAsText(evt.target.files[0]);
-				$('#save-filename').val(evt.target.files[0].name);
-
-				var files = evt.target.files; // FileList object
+				var files = event.target.files; // FileList object
 
 				// files is a FileList of File objects. List some properties.
 				var output = [];
@@ -390,17 +314,15 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				}
 				$('#file-list').html('<ul>' + output.join('') + '</ul>');
 			}
-
-			$('#pwd-file-upload').change(handleFileSelect);
 		</script>
 		<script id="wallet-download" type="text/javascript">
 			const MIME_TYPE = 'text/plain';
 
 			// Rockstars use event delegation!
-			$('.dragout').draggable({
-				start: function(e) { e.dataTransfer.setData('DownloadURL', e.target.dataset.downloadurl); },
-				stop: function(e) { cleanUp(e.target); }
-			});
+// 			$('.dragout').draggable({
+// 				start: function(e) { e.dataTransfer.setData('DownloadURL', e.target.dataset.downloadurl); },
+// 				stop: function(e) { cleanUp(e.target); }
+// 			});
 
 			function cleanUp(a) {
 				a.textContent = 'Downloaded';
@@ -592,7 +514,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				};
 
 				self.load = function() {
-					var unenc = decrypt(contents);
+					var unenc = decrypt($('#uploaded-content').text());
 					var ids = JSON.parse(unenc);
 					var id;
 					var wsi;
@@ -656,6 +578,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 		</script>
 	</head>
 	<body>
+		<output id="uploaded-content" hidden="true"></output>
 		<div id="main_container" class="container-fluid">
 			<div class="row">
 				<div class="col-sm-3 col-md-2 sidebar">
@@ -814,11 +737,9 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 									<label for="pwd-file-upload">Load your wallet</label>
 									<input type="file" id="pwd-file-upload" class="filestyle" />
 									<output id="file-list"></output>
-									<div id="progress_bar"><div class="percent">0%</div></div>
 								</div>
 								<div class="form-group">
 									<button class="btn btn-default" data-bind="click: load" data-dismiss="modal">Load from</button>
-									<button class="btn btn-default" onclick="abortRead();">Cancel read</button>
 									<button class="btn btn-default" onclick="clearInputFile('#pwd-file-upload', '#file-list');">Clear</button>
 								</div>
 							</div>
@@ -865,6 +786,8 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 				}
 			});
 			// </Setup the panic! modal & key>
+
+			$('#pwd-file-upload').change(upload);
 
 			$('.modal').on('hidden.bs.modal', function (e) {
 				$('#overview').addClass('active');

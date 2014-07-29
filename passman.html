@@ -152,7 +152,7 @@ uLq0G2p6mkXNMG1jVkXGVbWKFHVHHrVjlfK6BNWjpU3YQvMY17QVVLK1Q4ple3FC
 RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 =2wJ9
 -----END PGP PUBLIC KEY BLOCK-----</script>
-		<style>
+		<style id="overall-style">
 			/*
 			* Global add-ons
 			*/
@@ -172,7 +172,6 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 			/*
 			* Sidebar
 			*/
-			/* Hide for mobile, show later */
 			@media (min-width: 768px) {
 				.sidebar {
 					position: fixed;
@@ -267,6 +266,50 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 
 			table.table > tfooter > tr > td {
 				text-align: center;
+			}
+
+			.full-screen {
+				z-index: 1;
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				padding: 0;
+				margin: 0;
+				top: 0;
+				left: 0;
+				overflow: none;
+				border-width: 0;
+				-webkit-border-radius: 0;
+				   -moz-border-radius: 0;
+						border-radius: 0;
+			}
+
+			iframe.full-screen {
+				height: 99%;
+			}
+		</style>
+		<style id="ribbon-style">
+			.ribbon {
+				z-index: 2;
+				margin: 0;
+				text-align: center;
+				font-size: 1.5em;
+				font-weight: normal;
+				cursor: pointer;
+
+				/*-webkit-transform: rotate(-40deg)  scale(0.75) translate(-46%, -490%);
+				   -moz-transform: rotate(-40deg)  scale(0.75) translate(-46%, -490%);
+					-ms-transform: rotate(-40deg)  scale(0.75) translate(-46%, -490%);
+					 -o-transform: rotate(-40deg)  scale(0.75) translate(-46%, -490%);
+						transform: rotate(-40deg)  scale(0.75) translate(-46%, -490%);*/
+
+				-webkit-transform: rotate(-40deg) scale(0.75) translate(-49%, -1700%);
+				   -moz-transform: rotate(-40deg) scale(0.75) translate(-49%, -1700%);
+					-ms-transform: rotate(-40deg) scale(0.75) translate(-49%, -1700%);
+					 -o-transform: rotate(-40deg) scale(0.75) translate(-49%, -1700%);
+						transform: rotate(-40deg) scale(0.75) translate(-49%, -1700%);
+				background: #c30;
+				width: 100%;
 			}
 		</style>
 		<script id="model" type="text/javascript">
@@ -528,7 +571,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 			</div>
 		</div>
 		<div id="dialogs">
-			<div class="modal fade" id="setup" tabindex="-1" role="dialog" aria-labelledby="setupLabel" aria-hidden="true">
+			<div id="setup" 			aria-labelledby="setupLabel" 			class="modal fade"	tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -548,7 +591,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 								<div class="form-group">
 									<label for="passphrase-group">Passphrase</label>
 									<div class="input-group" id="passphrase-group">
-										<input class="form-control" type="password" id="pgp-passphrase"></input>
+										<input class="form-control" type="password" id="pgp-passphrase" />
 										<span class="input-group-addon btn glyphicon glyphicon-eye-close toggle-view-password"></span>
 									</div>
 								</div>
@@ -561,7 +604,7 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 					</div>
 				</div>
 			</div>
-			<div class="modal fade" id="storage-manager" tabindex="-1" role="dialog" aria-labelledby="storageManagerLabel" aria-hidden="true">
+			<div id="storage-manager" 	aria-labelledby="storageManagerLabel" 	class="modal fade"	tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -591,38 +634,77 @@ RtVVpgy8wtT69S3YU1yxmhNalkPdurPbRzO1fC8=
 					</div>
 				</div>
 			</div>
+			<div id="panic-screen"		aria-labelledby="panicScreenLabel"		class="modal"		tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog full-screen">
+					<div class="modal-content full-screen">
+						<div class="ribbon" data-toggle="modal" data-target="#panic-screen">Duck Duck Go!</div>
+						<div class="modal-body full-screen">
+							<iframe src="" class="full-screen">
+								<p>Your browser does not support iframes.</p>
+							</iframe>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			var viewModel = new IdentitiesViewModel();
-			var debugFlag = getParameterByName('debug');
-			if (debugFlag) {
-				$('ul.nav-sidebar').append('<li class="dynamic"><a href="#" data-bind="click: debugElements"><span class="glyphicon glyphicon-plus"></span> Debug Elements</a></li>');
+
+			// <Setup the panic! modal & key>
+			$('#panic-screen').modal({
+				keyboard: false,
+				backdrop: false,
+				show: false
+			});
+			$('#panic-screen').on('shown.bs.modal', function(e) {
+				$(this).find('div.modal-body').children('iframe').attr('src', 'http://duckduckgo.com/');
+			});
+			$('#panic-screen').on('hidden.bs.modal', function(e) {
+				$(this).find('div.modal-body').children('iframe').attr('src', '');
+			});
+
+			$(document).keypress(function(event) {
+				if (event.target.nodeName != 'INPUT' && event.target.nodeName != 'TEXTAREA') {
+					if (event.which == 112) { // lower 'p'
+						$('#panic-screen').modal('toggle');
+					}
+				}
+			});
+			// </Setup the panic! modal & key>
+
+			$('.modal').on('hidden.bs.modal', function (e) {
+				$('#overview').addClass('active');
+				$('#overview').siblings().removeClass('active');
+			});
+
+			$('span.toggle-view-password').click(function() {
+				var pwd_ctl = $(this).parent().find('input[type="password"]');
+				var txt_ctl = $(this).parent().find('input[type="text"]');
+				if (pwd_ctl) {
+					pwd_ctl.attr('type', 'text');
+				}
+				if (txt_ctl) {
+					txt_ctl.attr('type', 'password');
+				}
+			});
+
+			$('.consolidate').click(function() {
+				$('#overview').addClass('active');
+				$('#overview').siblings().removeClass('active');
+			});
+
+			$('ul.nav li').click(function() {
+				$(this).addClass('active');
+				$(this).siblings().removeClass('active');
+			});
+
+			if (getParameterByName('debug')) {
+				$('ul.nav-sidebar').append('<li><a href="#" data-bind="click: debugElements"><span class="glyphicon glyphicon-plus"></span> Debug Elements</a></li>');
 			}
+
 			ko.applyBindings(viewModel);
-		});
-		$('.modal').on('hidden.bs.modal', function (e) {
-			$('#overview').addClass('active');
-			$('#overview').siblings().removeClass('active');
-		});
-		$('span.toggle-view-password').click(function() {
-			var pwd_ctl = $(this).parent().find('input[type="password"]');
-			var txt_ctl = $(this).parent().find('input[type="text"]');
-			if (pwd_ctl) {
-				pwd_ctl.attr('type', 'text');
-			}
-			if (txt_ctl) {
-				txt_ctl.attr('type', 'password');
-			}
-		});
-		$('.consolidate').click(function() {
-			$('#overview').addClass('active');
-			$('#overview').siblings().removeClass('active');
-		});
-		$('ul.nav li').click(function() {
-			$(this).addClass('active');
-			$(this).siblings().removeClass('active');
 		});
 
 		var contents = '';
